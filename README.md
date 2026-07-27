@@ -1,5 +1,7 @@
 # 3D-Racing
 
+> **Opace open-source portfolio:** [Browse Opace 3D projects, interactive web applications, AI tools and Agent Skills](https://github.com/OpaceDigitalAgency/OpaceDigitalAgency)
+
 Advanced 3D racing game prototype (WebGPU when available, WebGL2 fallback).
 
 ## Run
