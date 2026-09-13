@@ -10,6 +10,6 @@ Please do not disclose a suspected vulnerability in a public issue.
 
 Use this repository's **Security** tab and **Report a vulnerability** option where available. Include the affected version or commit, impact, reproduction steps and any suggested mitigation. Do not include API keys, passwords, customer data or other secrets.
 
-If private vulnerability reporting is unavailable, contact [Opace Digital Agency](https://opace.agency/get-in-touch) and identify the affected GitHub repository.
+If private vulnerability reporting is unavailable, contact the repository owner through the [InnovatingTech](https://github.com/InnovatingTech) GitHub profile and identify the affected GitHub repository.
 
 Reports are reviewed on a best-effort basis. This policy does not create a support SLA.
