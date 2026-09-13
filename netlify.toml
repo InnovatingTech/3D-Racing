@@ -24,11 +24,6 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-[[headers]]
-  for = "/logos/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
 # Enable security headers (Netlify handles compression automatically)
 [[headers]]
   for = "/*"
