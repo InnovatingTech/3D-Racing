@@ -2,7 +2,7 @@
 
 **Generated:** 2025-12-14  
 **Project:** 3D Racing Game (APEX//WEB)  
-**Repository:** https://github.com/OpaceDigitalAgency/3D-Racing
+**Repository:** https://github.com/InnovatingTech/3D-Racing
 
 ---
 
@@ -135,11 +135,6 @@ window.__apexGame.scene.getActiveMeshes().length
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-[[headers]]
-  for = "/logos/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
 # Enable compression
 [[headers]]
   for = "/*"
@@ -168,12 +163,7 @@ window.__apexGame.scene.getActiveMeshes().length
 - **Caching:** Browser cache only (no service worker)
 
 **Logo Assets:**
-- `public/logos/New-Opace-Logo---High-Quality new.png`
-- `public/logos/website design agency logo.png`
-- `public/logos/Logo - Vector.png`
-- `public/logos/transparent logo small.png`
-- **Usage:** Track banners and car decals
-- **Loading:** Via Babylon.js Texture class
+- None. Track banners are plain colour panels generated at runtime, so no logo textures are downloaded.
 
 **Procedural Assets:**
 - Track geometry (generated at runtime)
@@ -466,8 +456,6 @@ dist/
 │   └── [shader files].js (hashed)
 ├── env/
 │   └── environmentSpecular.env
-├── logos/
-│   └── [logo files].png
 └── index.html
 ```
 
@@ -639,19 +627,7 @@ window.__apexGame.engine.setHardwareScalingLevel(0.5) // 50% resolution
 
 ### Logo Optimisation
 
-**Current:** PNG files (various sizes)
-
-**Recommended:**
-```bash
-# Convert to WebP (80% smaller)
-cwebp -q 90 "New-Opace-Logo---High-Quality new.png" -o logo.webp
-
-# Create fallback
-<picture>
-  <source srcset="logo.webp" type="image/webp">
-  <img src="logo.png" alt="Opace Logo">
-</picture>
-```
+Not applicable: the track banners are plain colour panels generated at runtime, so there are no logo textures to optimise.
 
 ---
 
