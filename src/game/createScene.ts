@@ -283,20 +283,19 @@ export async function createScene(engine: AbstractEngine, canvas: HTMLCanvasElem
     height: 3.5      // Slightly higher to clear track
   });
 
-  // Add sponsor banners and props around the track
+  // Add trackside banners and props around the track
   const props = new TrackProps(scene, track, shadowGen);
 
-  // Add banners with Opace logos - alternating two approved versions, visible from both sides
-  props.addBanner(0.05, 'right', '/logos/New-Opace-Logo---High-Quality new.png', 7, 12);
-  props.addBanner(0.20, 'left', '/logos/website design agency logo.png', 7, 12);
-  props.addBanner(0.35, 'right', '/logos/New-Opace-Logo---High-Quality new.png', 7, 12);
-  props.addBanner(0.50, 'left', '/logos/website design agency logo.png', 7, 12);
-  props.addBanner(0.65, 'right', '/logos/New-Opace-Logo---High-Quality new.png', 7, 12);
-  props.addBanner(0.80, 'left', '/logos/website design agency logo.png', 7, 12);
-  props.addBanner(0.95, 'right', '/logos/New-Opace-Logo---High-Quality new.png', 7, 12);
-
-  // Add logo decal to car roof
-  props.addCarDecal(carMesh, '/logos/New-Opace-Logo---High-Quality new.png');
+  // Plain colour banner panels - alternating two accent colours, visible from both sides
+  const panelCyan = new Color3(0.05, 0.75, 0.95);
+  const panelMagenta = new Color3(0.95, 0.25, 0.65);
+  props.addBanner(0.05, 'right', panelCyan, 7, 12);
+  props.addBanner(0.20, 'left', panelMagenta, 7, 12);
+  props.addBanner(0.35, 'right', panelCyan, 7, 12);
+  props.addBanner(0.50, 'left', panelMagenta, 7, 12);
+  props.addBanner(0.65, 'right', panelCyan, 7, 12);
+  props.addBanner(0.80, 'left', panelMagenta, 7, 12);
+  props.addBanner(0.95, 'right', panelCyan, 7, 12);
 
   // Mobile-specific memory optimizations
   if (isMobile) {
