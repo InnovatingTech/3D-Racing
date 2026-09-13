@@ -1,8 +1,6 @@
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
-import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { CreateBox } from "@babylonjs/core/Meshes/Builders/boxBuilder";
 import { CreateCylinder } from "@babylonjs/core/Meshes/Builders/cylinderBuilder";
 import type { Scene } from "@babylonjs/core/scene";
@@ -16,8 +14,8 @@ export class TrackProps {
     private shadowGen?: ShadowGenerator
   ) {}
 
-  // Create banner/billboard at a position along the track
-  addBanner(trackProgress: number, side: 'left' | 'right', logoPath: string, height: number = 6, width: number = 10) {
+  // Create a plain colour banner panel at a position along the track
+  addBanner(trackProgress: number, side: 'left' | 'right', panelColor: Color3, height: number = 6, width: number = 10) {
     const totalLen = this.track.totalLength;
     const targetDist = trackProgress * totalLen;
 
@@ -79,130 +77,51 @@ export class TrackProps {
     if (this.shadowGen) this.shadowGen.addShadowCaster(rightPole);
 
     // Banner dimensions and positioning
-    const backingHeight = height * 0.85;
-    const backingWidth = width * 1.08;
+    const panelHeight = height * 0.85;
+    const panelWidth = width * 1.08;
     const bannerY = poleHeight - height * 0.4;
 
-    // Create shared materials
-    const backingMat = new PBRMaterial("backingMat", this.scene);
-    backingMat.albedoColor = new Color3(1, 1, 1);
-    backingMat.roughness = 0.4;
-    backingMat.metallic = 0.0;
-    backingMat.emissiveColor = new Color3(0.15, 0.15, 0.15);
+    // Plain colour panel material, lit from both sides
+    const panelMat = new PBRMaterial("bannerPanelMat", this.scene);
+    panelMat.albedoColor = panelColor;
+    panelMat.roughness = 0.4;
+    panelMat.metallic = 0.0;
+    panelMat.emissiveColor = panelColor.scale(0.35);
+    panelMat.backFaceCulling = false;
+    panelMat.twoSidedLighting = true;
 
-    // Banner material with logo - front face
-    const bannerMat = new PBRMaterial("bannerMat", this.scene);
-    const logoTexture = new Texture(logoPath, this.scene);
-    logoTexture.hasAlpha = true;
-    bannerMat.albedoTexture = logoTexture;
-    bannerMat.albedoColor = new Color3(1, 1, 1);
-    bannerMat.roughness = 0.2;
-    bannerMat.metallic = 0.0;
-    bannerMat.useAlphaFromAlbedoTexture = true;
-    bannerMat.transparencyMode = PBRMaterial.MATERIAL_ALPHABLEND;
-    bannerMat.emissiveColor = new Color3(0.25, 0.25, 0.25);
-    bannerMat.emissiveTexture = logoTexture;
-    bannerMat.emissiveIntensity = 0.4;
-    bannerMat.backFaceCulling = true;  // Only show front face
-
-    // Separate material for back face with flipped texture
-    const bannerMatBack = new PBRMaterial("bannerMatBack", this.scene);
-    const logoTextureBack = new Texture(logoPath, this.scene);
-    logoTextureBack.hasAlpha = true;
-    logoTextureBack.uScale = -1;  // Flip horizontally so text reads correctly from back
-    bannerMatBack.albedoTexture = logoTextureBack;
-    bannerMatBack.albedoColor = new Color3(1, 1, 1);
-    bannerMatBack.roughness = 0.2;
-    bannerMatBack.metallic = 0.0;
-    bannerMatBack.useAlphaFromAlbedoTexture = true;
-    bannerMatBack.transparencyMode = PBRMaterial.MATERIAL_ALPHABLEND;
-    bannerMatBack.emissiveColor = new Color3(0.25, 0.25, 0.25);
-    bannerMatBack.emissiveTexture = logoTextureBack;
-    bannerMatBack.emissiveIntensity = 0.4;
-    bannerMatBack.backFaceCulling = true;  // Only show front face
-
-    // Make backing material double-sided
-    backingMat.backFaceCulling = false;
-    backingMat.twoSidedLighting = true;
-
-    // Use a thin box for backing (no z-fighting) - shows on both sides
-    const backing = CreateBox("bannerBacking", {
-      width: backingWidth,
-      height: backingHeight,
+    // Use a thin box for the panel (no z-fighting) - shows on both sides
+    const panel = CreateBox("bannerPanel", {
+      width: panelWidth,
+      height: panelHeight,
       depth: 0.05
     }, this.scene);
-    backing.position = bannerPos.clone();
-    backing.position.y = bannerY;
-    backing.rotation.y = faceRotation;
-    backing.material = backingMat;
-
-    // Create front banner plane
-    const bannerFront = MeshBuilder.CreatePlane("bannerFront", {
-      width,
-      height: height * 0.8
-    }, this.scene);
-    bannerFront.position = bannerPos.clone();
-    bannerFront.position.y = bannerY;
-    // Offset banner in front of backing
-    bannerFront.position.x += Math.sin(faceRotation) * 0.04;
-    bannerFront.position.z += Math.cos(faceRotation) * 0.04;
-    bannerFront.rotation.y = faceRotation + Math.PI;  // Face outward from backing
-    bannerFront.material = bannerMat;
-
-    // Create back banner plane (rotated 180 degrees so it faces the other way)
-    const bannerBack = MeshBuilder.CreatePlane("bannerBack", {
-      width,
-      height: height * 0.8
-    }, this.scene);
-    bannerBack.position = bannerPos.clone();
-    bannerBack.position.y = bannerY;
-    // Offset banner behind backing
-    bannerBack.position.x -= Math.sin(faceRotation) * 0.04;
-    bannerBack.position.z -= Math.cos(faceRotation) * 0.04;
-    bannerBack.rotation.y = faceRotation;  // Face the opposite direction
-    bannerBack.material = bannerMatBack;
+    panel.position = bannerPos.clone();
+    panel.position.y = bannerY;
+    panel.rotation.y = faceRotation;
+    panel.material = panelMat;
 
     // Add a coloured border/frame around the banner
     const frameMat = new PBRMaterial("frameMat", this.scene);
-    frameMat.albedoColor = new Color3(0.1, 0.4, 0.7); // Opace blue
+    frameMat.albedoColor = new Color3(0.1, 0.4, 0.7); // deep blue frame
     frameMat.roughness = 0.3;
     frameMat.metallic = 0.2;
     frameMat.emissiveColor = new Color3(0.05, 0.15, 0.3);
 
     // Top frame bar - spans across both sides
-    const topBar = CreateBox("topBar", { width: backingWidth + 0.3, height: 0.2, depth: 0.2 }, this.scene);
+    const topBar = CreateBox("topBar", { width: panelWidth + 0.3, height: 0.2, depth: 0.2 }, this.scene);
     topBar.position = bannerPos.clone();
-    topBar.position.y = bannerY + backingHeight / 2 + 0.1;
+    topBar.position.y = bannerY + panelHeight / 2 + 0.1;
     topBar.rotation.y = faceRotation;
     topBar.material = frameMat;
     if (this.shadowGen) this.shadowGen.addShadowCaster(topBar);
 
     // Bottom frame bar
-    const bottomBar = CreateBox("bottomBar", { width: backingWidth + 0.3, height: 0.2, depth: 0.2 }, this.scene);
+    const bottomBar = CreateBox("bottomBar", { width: panelWidth + 0.3, height: 0.2, depth: 0.2 }, this.scene);
     bottomBar.position = bannerPos.clone();
-    bottomBar.position.y = bannerY - backingHeight / 2 - 0.1;
+    bottomBar.position.y = bannerY - panelHeight / 2 - 0.1;
     bottomBar.rotation.y = faceRotation;
     bottomBar.material = frameMat;
     if (this.shadowGen) this.shadowGen.addShadowCaster(bottomBar);
   }
-  
-  // Add sponsor decal on car roof
-  addCarDecal(carMesh: any, logoPath: string) {
-    const decal = MeshBuilder.CreatePlane("carDecal", { width: 0.8, height: 0.4 }, this.scene);
-    decal.rotation.x = -Math.PI / 2;
-    decal.position.y = 0.88;
-    decal.position.z = -0.2;
-    decal.parent = carMesh;
-    
-    const decalMat = new PBRMaterial("carDecalMat", this.scene);
-    const logoTexture = new Texture(logoPath, this.scene);
-    logoTexture.hasAlpha = true;
-    decalMat.albedoTexture = logoTexture;
-    decalMat.useAlphaFromAlbedoTexture = true;
-    decalMat.transparencyMode = PBRMaterial.MATERIAL_ALPHABLEND;
-    decalMat.roughness = 0.2;
-    decalMat.metallic = 0.0;
-    decal.material = decalMat;
-  }
 }
-
