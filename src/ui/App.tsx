@@ -112,7 +112,7 @@ export function App({ game }: { game: GameAPI }) {
       <TouchOverlay mode={touchMode} visible={isMobile || touchMode !== "off"} />
       <div className={`ui ui--cockpit ${isMobile ? "ui--mobile" : ""}`}>
         <div className="ui__header">
-          <h1>Opace Racer</h1>
+          <h1>Neon Racer</h1>
           {isMobile && (
             <button
               className="ui__close-btn"
